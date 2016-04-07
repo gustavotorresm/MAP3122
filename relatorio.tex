@@ -1,0 +1,322 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[brazilian]{babel}
+\usepackage{amsmath,mathtools}
+\usepackage{amsfonts}
+\usepackage{relsize}
+\usepackage{textcomp}
+\usepackage{amssymb}
+
+
+\newcommand{\diagentry}[1]{\mathmakebox[4em]{#1}}
+\newcommand{\xddots}{%
+ \raise 3pt \hbox {.}
+  \mkern 6mu
+  \raise 1pt \hbox {.}
+  \mkern 6mu
+  \raise -1pt \hbox {.}
+}
+
+%opening
+\title{Relatório Parcial}
+\author{Gustavo Torres \and Mateus Nakajo}
+
+\begin{document}
+
+\maketitle
+
+\section{Introdução}
+  Muitos dos fenômenos do Universo podem ser modelados matematicamente por equações diferencias, o problema da curva de perseguição é um exemplo de tal fenômeno. Ele é um modelo que se baseia em uma partícula que descreve uma trajetória bem definida, o perseguido, e uma outra partícula, o perseguidor, que sempre se move em direção à primeira, descrevendo uma pe																																																															rseguição.
+  
+  Esta curva foi proposta pelo matemático Piérre Bouguer em 1732 e foi, em 1859, melhor estudada pelo matemático George Boole, que a batizou como “curva de perseguição”. 
+  A ideia por trás dos conceitos do sistema é de grande interesse para  aplicações reais e pode ser utilizada para modelar sistemas mais concretos e complexos.
+  
+  A motivação para o estudo deste tipo de curvas é uma análise prévia da trajetória de elementos que sabemos que descreverão uma perseguição, e.g., um foguete cujo destino é um satélite em órbita, para alcançá-lo, ele deverá ``perseguir" o satélite. Portanto, a modelagem matemática pode ser utilizada e adaptada para um modelo mais complexo de perseguição, e assim calcular o caminho que o foguete deve percorrer. Na área de computação, o modelo também aparece, como por exemplo em jogos eletrônicos, nos quais o jogador deve fugir dos vilões que o perseguem. 
+  
+  Nas seguintes seções iremos apresentar o modelo matemático que descreve a trajetória do perseguidor e a dedução deste modelo, a discretização para três trajetórias diferentes do perseguido, e os resultados e conclusões obtidos a partir da resolução numérica dos modelos discretizados.
+  
+\section{Modelagem matemática}
+  O modelo da curva de perseguição é descrita a partir de duas restrições\cite{lloyd}: (I) \emph{o perseguidor sempre se move em direção ao perseguido}, e (II) \emph{a velocidade do perseguidor é proporcional à velocidade do perseguido}.
+  
+  Para obtermos a equação diferencial que rege o sistema, utilizaremos a seguinte notação:
+  \begin{itemize}
+   \item $\mathbb{U}(t) = (u_{x}(t), u_{y}(t)) = (x(t), y(t))$ é o vetor posição do \textbf{perseguidor} no instante de tempo $t$, com componentes $u_{x}(t)$ e $u_{y}(t)$ nos eixos $x$ e $y$, respectivamente.
+   
+   \item $\mathbb{V}(t) = (v_{x}(t), v_{y}(t))$ é o vetor posição do \textbf{perseguido} no instante de tempo $t$, com componentes $v_{x}(t)$ e $v_{y}(t)$ nos eixos $x$ e $y$, respectivamente.
+   
+   \item $\widehat{s}(t)$ é o vetor unitário paralelo ao vetor $\mathbb{S}(t)$.
+   
+   \item $\mathbb{S}'(t) = (s_{x}'(t), s_{y}'(t))$, onde $s'_{x}$ e $s'_{y}$ são as derivadas em relação ao tempo das componentes de $\mathbb{S}$.
+   
+   \item $||\mathbb{S}|| = \sqrt{s_{x}^2 + s_{y}^2}$ é o módulo do vetor $\mathbb{S}$.
+   
+  \end{itemize}
+
+  A ordem da equação resultante depende da dimensão do vetor $\mathbb{U}$. Neste relatório utilizaremos apenas duas dimensões, o que produz uma EDO de segunda ordem.
+  
+  A restrição (I) pode ser descrita matematicamente por:
+  \begin{align}
+   \widehat{u}(t) &= \frac{\mathbb{V}(t) - \mathbb{U}(t)}{|| \mathbb{V}(t) - \mathbb{U}(t) ||}
+   \\  
+   \frac{\mathbb{U}(t)}{||\mathbb{U}(t)||} &= \frac{\mathbb{V}(t) - \mathbb{U}(t)}{|| \mathbb{V}(t) - \mathbb{U}(t) ||}
+   \label{eq:rest1}
+  \end{align}
+  
+  A restrição (II), por sua vez, é descrita por:
+  \begin{align}
+   ||\mathbb{U}'(t)|| &\propto ||\mathbb{V}'(t)||
+   \\
+   ||\mathbb{U}'(t)|| &= k ||\mathbb{V}'(t)||, \qquad k \in \mathbb{R}_+
+   \label{eq:rest2}
+  \end{align}
+  Onde $k$ é a constante de proporcionalidade entre as velocidades do perseguidor e do perseguido.
+  
+  Substituindo-se $||\mathbb{U}'(t)||$ da equação \ref{eq:rest2} na equação \ref{eq:rest1}, obtemos a forma normal da equação vetorial.
+  
+  \begin{align}
+   \frac{\mathbb{U}'(t)}{k ||\mathbb{V}'(t)||} = &\frac{\mathbb{V}(t) - \mathbb{U}(t)}{|| \mathbb{V}(t) - \mathbb{U}(t) ||}
+   \\
+   \mathbb{•}{U}'(t) = k ||\mathbb{V}'(t)|| &\frac{\mathbb{V}(t) - \mathbb{U}(t)}{|| \mathbb{V}(t) - \mathbb{U}(t) ||}
+  \end{align}
+  \begin{equation}
+   \mathbb{U}'(t) = \begin{pmatrix}x'(t) \\ y'(t) \end{pmatrix} = 
+   \begin{pmatrix}
+   k\sqrt{(v'_{x})^2 + (v'_{y})^2}\dfrac{v_{x} - x}{\sqrt{(v_{x} - x)^2 + (v_{y} - y)^2}}
+   \\ 
+   k\sqrt{v_{x}^2 + v_{y}^2}\dfrac{v_{y} - y}{\sqrt{(v_{x} - x)^2 + (v_{y} - y)^2}} 
+   \end{pmatrix}
+  \end{equation}
+  
+  \section{Metodologia numérica}
+  A solução numérica será calculada a partir do método de Adams-Moulton de segunda ordem, ou \emph{método dos trapézios}, que é um método implícito de integração de EDOs, de dois passos e de segunda ordem. O método é descrito pela equação:
+  \begin{equation}
+   \mathbb{U}_{n+1} = \mathbb{U}_{n} + \tfrac{h}{2}(f(t_{n+1},\mathbb{U}_{n+1}) + f(t_{n},\mathbb{U}_{n}))
+  \end{equation}
+  Onde $h = \frac{t_f-t_0}{n}, t_n = t_{n-1}+h$ e
+  $f(t_{n}, \mathbb{U})$ é um vetor dado por:
+  \begin{equation}
+    f(t_{n}, \mathbb{U}_{n}) = 
+    \begin{pmatrix}
+      k\sqrt{(v'_{x}(t_{n}))^2 + (v'_{y}(t_{n}))^2}\dfrac{v_{x}(t_{n}) - x_{n}}{\sqrt{(v_{x}(t_{n}) - x_{n})^2 + (v_{y}(t_{n}) - y_{n})^2}}
+      \\ 
+      k\sqrt{(v'_{x}(t_{n}))^2 + (v'_{y}(t_{n}))^2}\dfrac{v_{x}(t_{n}) - y_{n}}{\sqrt{(v_{x}(t_{n}) - x_{n})^2 + (v_{y}(t_{n}) - y_{n})^2}} 
+   \end{pmatrix}
+  \end{equation}
+  
+  Isso resulta em um sistema de equações com $x_{n+1}$ e $y_{n+1}$ como incógnitas. Para obtermos a solução, utilizaremos o método de Newton no formato
+  \begin{equation}
+    \mathbb{U}_{n+1}^{(k+1)} = \mathbb{U}_{n+1}^{(k)} - [J(\mathbb{U}_{n+1}^{(k)})]^{-1}g(\mathbb{U}_{n+1}^{(k)})
+  \end{equation}
+  
+  Com 
+  
+  \begin{equation}
+   g(\mathbb{U}_{n+1}^{(k)}) = 
+   \begin{pmatrix}
+     g_{1}(\mathbb{U}_{n+1}^{(k)})
+     \\
+     g_{2}(\mathbb{U}_{n+1}^{(k)})
+   \end{pmatrix}
+  \end{equation}
+  
+  \begin{equation}
+    \begin{split}
+     g_{1}(\mathbb{U}) = x_{n} - x_{n+1}^{(k)} + \dfrac{hk}{2}\left(\dfrac{||\mathbb{V}'(t_{n+1})||(v_{x}(t_{n+1}) -x_{n+1}^{(k)})}{\sqrt{(v_{x}(t_{n+1}) - x_{n+1}^{(k)})^2 + (v_{y}(t_{n+1}) - y_{n+1}^{(k)})^2}}+\right.
+     \\
+     \left.
+     + \dfrac{||\mathbb{V}'(t_{n})||(v_{x}(t_{n})-x_{n})}{\sqrt{(v_{x}(t_{n})-x_{n})^2 + (v_{y}(t_{n}) - y_{n})^2}}\right)
+    \end{split}
+   \end{equation}
+   \begin{equation}
+     \begin{split}
+     g_{2}(\mathbb{U}) = y_{n} - y_{n+1}^{(k)} + \dfrac{h}{2}\left(\dfrac{||\mathbb{V}'(t_{n+1})||(v_{y}(t_{n+1}) -y_{n+1}^{(k)})}{\sqrt{(v_{x}(t_{n+1}) - x_{n+1}^{(k)})^2 + (v_{y}(t_{n+1}) - y_{n+1}^{(k)})^2}}+\right.
+     \\
+     \left.
+     + \dfrac{||\mathbb{V}'(t_{n})||(v_{y}(t_{n})-y_{n})}{\sqrt{(v_{x}(t_{n})-x_{n})^2 + (v_{y}(t_{n}) - y_{n})^2}}\right)
+     \end{split}
+  \end{equation} 
+  
+  E $J^{-1}$ o inverso da matriz jacobiana $$J(\mathbb{U}_{n}^{(k)}) = 
+  \begin{pmatrix}
+    \dfrac{dg_{1}(\mathbb{U}_{n+1}^{(k)})}{dx_{n+1}^{(k)}} & \dfrac{dg_{1}(\mathbb{U}_{n+1}^{(k)})}{dy_{n+1}^{(k)}}
+    \\
+    \dfrac{dg_{2}(\mathbb{U}_{n+1}^{(k)})}{dx_{n+1}^{(k)}} & \dfrac{dg_{2}(\mathbb{U}_{n+1}^{(k)})}{dy_{n+1}^{(k)}}
+  \end{pmatrix}$$
+  
+  Calculando os valores necessários:
+  \begin{align}
+   \frac{dg_{1}(\mathbb{U}_{n+1})}{dx} &= -1 + \frac{hk||\mathbb{V}'(t_{n+1}||}{2} \left[\frac{(v_{x}(t_{n+1}) - x_{n+1})^{2} - ||\mathbb{V}(t_{n+1}) - \mathbb{U}_{n+1}||^{2}}{||\mathbb{V}(t_{n+1}) - \mathbb{U}_{n+1}||^{3}}\right]
+   \\
+   \frac{dg_{1}(\mathbb{U}_{n+1})}{dy} &= \frac{hk||\mathbb{V}'(t_{n+1}||}{2} \frac{(v_{x}(t_{n+1}) - x_{n+1}) (v_{y}(t_{n+1} - y_{n+1})}{||\mathbb{V}(t_{n+1}) - \mathbb{U}_{n+1}||}
+   \\
+   \frac{dg_{2}(\mathbb{U}_{n+1})}{dx} &= \frac{hk||\mathbb{V}'(t_{n+1}||}{2} \frac{(v_{x}(t_{n+1}) - x_{n+1}) (v_{y}(t_{n+1} - y_{n+1})}{||\mathbb{V}(t_{n+1}) - \mathbb{U}_{n+1}||}
+   \\
+   \frac{dg_{2}(\mathbb{U}_{n+1})}{dy} &= -1 + \frac{hk||\mathbb{V}'(t_{n+1}||}{2} \left[\frac{(v_{y}(t_{n+1}) - y_{n+1})^{2} - ||\mathbb{V}(t_{n+1}) - \mathbb{U}_{n+1}||^{2}}{||\mathbb{V}(t_{n+1}) - \mathbb{U}_{n+1}||^{3}}\right]
+  \end{align}
+  
+  \begin{equation}
+   \begin{split}
+   \det{J^{-1}(\mathbb{U}_{n+1})} = 1 + \frac{hk||\mathbb{V}'(t_{n+1}||}{2} + \frac{(hk||\mathbb{V}'(t_{n+1}||)^{2}}{4}\cdot
+   \\
+   \cdot\left(\frac{1}{||\mathbb{V}(t_{n+1} - \mathbb{U}_{n+1}||^{2}} - \frac{1}{||\mathbb{V}(t_{n+1} - \mathbb{U}_{n+1}||}\right) 
+   \end{split}
+  \end{equation}
+
+  Os valores de $x_{n+1}^{(k+1)}$ e $y_{n+1}^{(k+1)}$ são,portanto:
+  \begin{equation}
+   x_{n+1}^{(k+1)} = x_{n+1}^{(k)} - \frac{\mathlarger{\frac{dg_{2}\mathsmaller{(\mathbb{U}_{n+1})}}{dy}}g_{1}\mathsmaller{(\mathbb{U}_{n+1})} -
+   \\
+   \mathlarger{\frac{dg_{1}\mathsmaller{(\mathbb{U}_{n+1})}}{dy}}g_{2}\mathsmaller{(\mathbb{U}_{n+1})}
+   \\
+   }{\det{J^{-1}\mathsmaller{(\mathbb{U}_{n+1})}}}
+  \end{equation}
+  \begin{equation}
+   y_{n+1}^{(k+1)} = y_{n+1}^{(k)} - \frac{\mathlarger{-\frac{dg_{2}\mathsmaller{(\mathbb{U}_{n+1})}}{dx}}g_{1}\mathsmaller{(\mathbb{U}_{n+1})} +
+   \\
+   \mathlarger{\frac{dg_{1}\mathsmaller{(\mathbb{U}_{n+1})}}{dx}}g_{2}\mathsmaller{(\mathbb{U}_{n+1})}
+   \\
+   }{\det{J^{-1}\mathsmaller{(\mathbb{U}_{n+1})}}}
+  \end{equation}
+
+  Concluímos assim a discretização genérica para o modelo. Para os sistemas que iremos estudar, basta substituirmos os parâmetros por seus respectivos valores.
+  
+  Este método será utilizado para resolver 3 equações diferentes, uma para testar o funcionamento e a velocidade de convergência do método, e mais duas para se obter a curva do perseguidor para curvas que não podem ser obtidas analiticamente ou que a solução seria muito trabalhosa. 
+  
+  O primeiro sistema, para verificar a validade do método, no modelo de resolução por solução manufaturada, é o caso em que o perseguido descreve uma linha reta. Os parâmetros do modelo são: $\mathbb{V}(t) = (0, t)$, $\mathbb{V}'(t) = (0, 1)$, $k = 1$ e $\mathbb{U}(0) = (10, 0)$, i.e., o perseguido descreve uma trajetória paralela ao eixo $y$, com início na origem do plano cartesiano e com velocidade contante de valor 1. O perseguidor está a uma distância 10 de sua presa e se move com a mesma velocidade.
+  
+  A solução deste problema é bem conhecido na literatura\cite{wolfram} e podemos expressá-la pelas equações
+  \begin{align}
+   x(t) &= 10\sqrt{W(e^{1 -^{4t}/_{10}})} \\
+   y(t) &= \frac{5}{2}(W(e^{1 -^{4t}/_{10}}) - \log{(W(e^{1 -^{4t}/_{10}}))} - 1)   
+  \end{align}
+  Onde $W(x)$ é a função $W$ de Lambert.
+  
+  O segundo sistema que iremos resolver é quando o perseguido descreve uma trajetória elíptica. Os parâmetros, para este caso, são: $\mathbb{V}(t) = (\alpha \cos(t), \beta \sin(t))$, $\mathbb{V}'(t) = (-\alpha \sin(t), \beta \cos(t))$, usando $k = 0.5$, $k = 1$ e $k = 2$, para analisarmos se o perseguidor consegue alcançar sua presa, e variando sua posição inicial para pontos dentro e fora da elipse.
+  
+  O último sistema estudado descreve um perseguindo fugindo de seu persegidor descrevendo uma trajetória em \emph{zigue-zague}. Esta trajetóra é parametrizada por:
+  \begin{equation}
+  \mathbb{V}(t) =
+   \begin{cases}
+    (t, 0), \quad se \quad 2i \leqslant t < 2i + 1 \qquad i \in \mathbb{Z_{+}} \\
+    (0, t), \quad se \quad 2i + 1 \leqslant t < 2(i + 1) \qquad i \in \mathbb{Z_{+}}
+   \end{cases}
+   \label{eq:param}
+  \end{equation}
+  
+  Da equação \ref{eq:param} obtemos que $||\mathbb{V}'(t)|| = 1$. Neste modelo utilizaremos $k = 1$ e também iremos variar a posição inicial do perseguidor. Neste último modelo também será utilizado o método de \emph{spline} polinomial de terceiro grau, para interpolar os pontos obtidos para a trajetória do perseguidor.  
+   
+  Na interpolação por \emph{spline} cúbico, o intervalo no qual a função é aproximada é dividido em subintervalos e em cada um deles a função é aproximada por um polinômio de terceiro grau. Como existem quatro graus de liberdade na construção de uma função cúbica, é possível construí-las de modo que o \emph{spline} resultante tenha tanto primeira como segunda derivada contínua.
+  Para isso acontecer, as seguintes condições devem ser satisfeitas:
+  \begin{enumerate}
+  \item $S_j(x)$ é um polinômio cúbico, no subintervalo $[x_j,x_{j+1}]$ para cada $j = 0,1,...,n-1$
+  \item $S_j(x_j) = y_j$ e $S_{j+1}(x_{j+1}) = y_{j+1} $ para cada $j = 0,1,...,n-1$
+  \item $S_{j+1}(x_{j+1})=S_j(x_{j+1})$ para cada $j = 0,1,...,n-1$
+  \item $S'_{j+1}(x_{j+1})=S'_j(x_{j+1})$ para cada $j = 0,1,...,n-1$
+  \item $S''_{j+1}(x_{j+1})=S''_j(x_{j+1})$ para cada $j = 0,1,...,n-1$
+  \item $S''(x_0) = S''(x_n) = 0$
+  \end{enumerate}
+  
+  A condição 6 é adotada porque não se tem informação sobre as derivadas nas fronteiras. Nesse caso, o \emph{spline} é chamado de \emph{spline} natural.  
+  
+Para construir um \emph{spline} cúbico, devem satisfazer as condições as funções cúbicas
+  \begin{equation}
+   S_j(z) = a_j + b_j(z - z_j)+c_j(z-z_j)^2 + d_j(z-z_j)^3
+   \label{eq:spline}
+  \end{equation}
+  para cada $j = 0, 1, ..., n-1$.
+  Seja $h_j=z_{j+1}-z_j$.
+  É possível provar \cite{burden} que os coeficientes $a_j, b_j, c_j$ e $d_j$ satisfazem as seguintes relações:
+  \begin{equation}
+   a_j = y_{j}
+  \label{eq:coef_a}
+  \end{equation}
+  
+  \begin{equation}
+  b_j = \frac{1}{h_j}(a_{j+1} - a_j) - \frac{h_j}{3}(2c_j - c_{j+1})
+  \label{eq:coef_b}
+  \end{equation}
+  
+  \begin{equation}
+   d_j = \frac{1}{3h_j}(c_{j+1}-c_j)
+  \label{eq:coef_d}
+  \end{equation}
+
+  Para achar o calor dos $c_j$, é necessário resolver o sistema $Ax=b$, onde: 
+$
+A = \begin{pmatrix}
+\diagentry{1} & \diagentry{0}&0&\cdots&\cdots&0\\
+\diagentry{h_0} & \diagentry{2(h_0+h_1)} & \diagentry{h_1}&\diagentry{\xddots}&&\vdots\\
+0 &\diagentry {h_1} & \diagentry{2(h_1+h_2)} & \diagentry{h_2}&\diagentry{\xddots}&\vdots\\
+\vdots & \diagentry{\xddots} & \diagentry{\xddots} & \diagentry{\xddots} & \diagentry{\xddots}&0\\
+\vdots && \diagentry{\xddots} & \diagentry {h_{n-2}} & \diagentry{2(h_{n-2}+h_{n-1})} & \diagentry{h_{n-1}}\\
+0 &\cdots&\cdots&0& 0 & 1\\
+
+
+\end{pmatrix}
+$
+
+$
+b = \begin{pmatrix}
+0\\
+\frac{3}{h_1}(a_2-a_1)-\frac{3}{h_0}(a_1-a_0)\\
+\vdots\\
+\frac{3}{h_{n-1}}(a_n-a_{n-1})-\frac{3}{h_{n-2}}(a_{n-1}-a_{n-2})\\
+0\\
+\end{pmatrix}
+$
+e
+$
+x = \begin{pmatrix}
+c_0\\
+c_1\\
+\vdots\\
+c_n
+\end{pmatrix}
+$
+\\ \\
+Para resolver esse sistema, usaremos o Método iterativo de Gauss-Seidel \cite{humes}. 
+  \begin{multline}
+\\ c_0 = 0 \\
+c_1^{[k+1]} = \frac{-h_1c_2^{[k]}}{2(h_0+h_1)} \\
+c_2^{[k+1]} = \frac{-h_1c_1^{[k+1]}-h_2c_3^{[k]}}{2(h_1+h_2)} \\
+c_3^{[k+1]} = \frac{-h_2c_2^{[k+1]}-h_3c_4^{[k]}}{2(h_2+h_3)} \\
+\vdots \\
+c_{n-1}^{[k+1]} = \frac{-h_{n-2}c_{n-2}^{[k+1]}}{2(h_{n-2}+h_{n-1})} \\
+c_n = 0 \\
+  \end{multline}
+  
+  
+  
+  O Método iterativo de Gauss-Seidel tem convergência garantida pelo critério das linhas, pois $|A_{ii}| > \sum\limits_{j=1, j\not=i}^{n}|A_{ij}|$.
+
+
+      
+  	
+
+  \section{Referências bibliográficas}
+  \bibliographystyle{unsrt}
+
+  \begin{thebibliography}{9}
+    \bibitem{wolfram}
+      WEISSTEIN, Eric W.,
+      \emph{Pursuit Curve},
+      MathWorld--A Wolfram Web Resource,
+      Disponível em: http://mathworld.wolfram.com/PursuitCurve.html,
+      Acessado 25/03/2016.
+
+    \bibitem{lloyd}
+      LLOYD, Michael, Ph.D.,
+      \emph{Pursuit Curves},
+      Academic Forum 24,
+      2006.
+     \bibitem{humes}
+      HUMES, Ana et al. \emph{Noções de Cálculo Numérico}. São Paulo: McGraw-Hill do Brasil, 1984.
+     \bibitem{burden}
+      BURDEN, Richard L.; FAIRES, J. Douglas. \emph{Numerical Analysis}. Boston: Brooks Cole, 2010.  
+     
+     
+     
+
+  \end{thebibliography}
+
+\end{document}
