@@ -62,9 +62,6 @@ def calcula(manufaturado = False):
 	Un = u[:,0] = Real(to) if manufaturado else Uo
 
 	tn = to
-	#Un = u[:, 1] = u[:, 0] + RungeKutta(u[:, 0])
-
-	#tn = t[1] = tn + h
 
 	for i in range(1, n + 1):
 		tn1 = t[i] = t[i-1] + h
@@ -74,20 +71,13 @@ def calcula(manufaturado = False):
 	if manufaturado:
 		r = Real(t)
 		erro = alglin.norm(r[:,n-1] - u[:,n-1])
+	else:
+		erro = None
 
-	return {'erro': erro}
-
-	# v = np.empty((2, n + 1))
-
-	# for i in range(n + 1):
-	# 	v[:,i] = V(t[i])
-
-	# plt.plot(v[0], v[1])
-	# plt.plot(u[0], u[1])
-	# plt.show()
+	return {'U': u, 'erro': erro}
 
 
-for i in range(1,15):
+for i in range(1,11):
 	init(i)
 	resultado = calcula(True)
 
@@ -103,3 +93,12 @@ for i in range(1,15):
 		print("{:.5}".format(np.log(anterior/erro)/np.log(2)), end = '\t')
 
 	print("")
+
+v = np.empty((2, n + 1))
+
+for i in range(n + 1):
+	v[:,i] = V(t[i])
+
+plt.plot(v[0], v[1], '-')
+plt.plot(u[0], u[1])
+plt.show()

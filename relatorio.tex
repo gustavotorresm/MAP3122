@@ -6,7 +6,11 @@
 \usepackage{relsize}
 \usepackage{textcomp}
 \usepackage{amssymb}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{geometry}
 
+\graphicspath{{./img/}}
 
 \newcommand{\diagentry}[1]{\mathmakebox[4em]{#1}}
 \newcommand{\xddots}{%
@@ -323,9 +327,16 @@ c_n = 0 \\
   
   Como pode ser visto pela tabela \ref{tab:convergencia}, o método que implementamos está correto e, para $8 \leq i \leq 11$, sua ordem de convergência é praticamente igual ao valor teórico. Mesmo com o uso do método de Newton, que é um método iterativo e nem sempre retorna o valor exato da função. Neste modelo, como a função $g$ que se deve calcular a raíz não é linear, o valor retornado não é exato, mas é um número próximo. Os critérios de parada utilizados foram um número máximo de 100 iterações ou uma variação relativa de 0.001 entre o valor de duas iterações consecutivas. Estes valores foram escolhidos após realizados testes com números maiores e verificado que estes valores resultam em um erro absoluto baixo para o cálculo de $\mathbb{U}$ e eles não consomem muito tempo computacional.
   
-  Os valores obtidos com a execução deste programa também foi gerado um gráfico da imagem do curva do perseguido, da curva exata do perseguidor e de mais 3 curvas com diferentes valores de $h$.
+  Os valores obtidos com a execução deste programa também foi gerado um gráfico da imagem do curva do perseguido, da curva exata do perseguidor e de mais 3 curvas com diferentes valores de $h$. Este gráfico é apresentado na figura \ref{fig:manufaturada}. Nesta figura fica claro a convergência numérica, já que os gráficos para $ i \geqslant 7$ estão praticamente sobrepostos. Também podemos perceber o interessante fato de que se ambos os elementos se movem à mesma velocidade, o perseguidor nunca alcançará seu alvo, ele conseguirá apenas reduzir sua distância à metade do valor inicial.
   
-  Com o método devidamente implementado, podemos analisar a curva descrita pelo perseguidor para diferentes parâmetros da equação.
+  \begin{figure}[H]
+   \includegraphics[width=\textwidth]{manufaturada.png}
+   \label{fig:manufaturada}
+   \caption{Curvas do perseguido e do perseguidor para o problema teste.}
+  \end{figure}
+
+  
+  Com o método devidamente implementado, podemos analisar a curva descrita pelo perseguidor para diferentes parâmetros da equação. 
 
   
   \section{Referências bibliográficas}
