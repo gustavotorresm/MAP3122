@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 def spline(X, A, fpo, fpn):
 	n = len(X)-1
@@ -37,6 +38,24 @@ def spline(X, A, fpo, fpn):
 		C[i] = z[i] - mi[i] * C[i+1]
 		B[i] = (A[i+1] - A[i]) / H[i] - H[i] * (C[i+1] + 2 * C[i]) / 3
 		D[i] = (C[i+1] - C[i]) / (3 * H[i])
+	
+
+	T = np.arange(0., 40., 0.01)
+	y = np.arange(0., 40., 0.01)
+
+	
+	for j in range(n):
+		i = 0
+		T = np.arange(0.+10*i, 10+10*i, 0.01)
+		for t in T:
+			y[i] = A[0] + B[0]*(t-X[0])+C[0]*(t-X[0])**2+D[0]*(t-X[0])**3
+			i = i+1	
+
+	T = np.arange(0., 40., 0.01)
+
+	plt.plot(T,y)
+	plt.show()
+	
 
 		 
 		
