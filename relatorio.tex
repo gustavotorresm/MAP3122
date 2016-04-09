@@ -176,6 +176,7 @@
    \mathlarger{\frac{dg_{1}\mathsmaller{(\mathbb{U}_{n+1})}}{dx}}g_{2}\mathsmaller{(\mathbb{U}_{n+1})}
    \\
    }{\det{J^{-1}\mathsmaller{(\mathbb{U}_{n+1})}}}
+   \label{eq:discret}
   \end{equation}
 
   Concluímos assim a discretização genérica para o modelo. Para os sistemas que iremos estudar, basta substituirmos os parâmetros por seus respectivos valores.
@@ -290,20 +291,43 @@ c_n = 0 \\
   O Método iterativo de Gauss-Seidel tem convergência garantida pelo critério das linhas, pois $|A_{ii}| > \sum\limits_{j=1, j\not=i}^{n}|A_{ij}|$.
 
   \section{Resultados}
-  \begin{tabular}{c c c}
-    4.8149E+00 & ------ & ------ \\
-    1.0312E+00 & 4.6694 & 2.2232 \\ 
-    2.6014E-01 & 3.9639 & 1.9869 \\
-    6.5154E-02 & 3.9927 & 1.9974 \\ 
-    1.6280E-02 & 4.0021 & 2.0007 \\ 
-    4.0693E-03 & 4.0007 & 2.0003 \\ 
-    1.0173E-03 & 4.0002 & 2.0001 \\ 
-    2.5432E-04 & 4.0000 & 2.0000 \\
-    6.3579E-05 & 4.0000 & 2.0000 \\
-    1.5895E-05 & 4.0000 & 2.0000 \\
-    3.9737E-06 & 4.0000 & 2.0000 \\
-  \end{tabular} 	
+  O método de resolução de problema discretizado pelo método dos trapézios, segundo a equação \ref{eq:discret}, foi testado para o modelo clássico de solução exata conhecida e, a partir da saída gerada pelo programa implementado, foi montada a tabela \ref{tab:convergencia}, que, como na Tarefa 2, exibe o comportamento da convergência do método.
+  
+  O princípio da tabela é verificar a variação do erro absoluto para valores diferentes de $\Delta t = h$. Foram utilizados 11 valores diferentes para $h$, dados por $h = (t_{f} - t_{0}) * 2 ^ {- i}$, onde $t_{f}$ é o instante de tempo final do intervalo, onde será calculado o erro absoluto, que é dado pela soma euclidiana da diferença do valor obtido numéricamente com o valor exato, i.e., $|e| = \sqrt{(x(t_{f}) - x_{n})^{2} + (y(t_{f}) - y_{n})^2}$. Os parâmetros e as condições de contorno para este problema manufaturado foram especificados na seção anterior.
+  
+  A tabela possui 4 colunas, uma indicando o valor de $i$, uma com o erro absoluto $|e_{i}|$, outra com a razão entre o erro anterior com o erro atual e, finalmente, uma coluna indicando o logaritmo na base 2 desta razão. Pela teoria, este valor deve convegir para um número $N$, que será a ordem do método (para o método dos trapézios, $N = 2$). Se esta última coluna convergir, o erro tende a 0 e, portanto, o método implementado computacionalmente estará correto.
 
+  \begin{table}[ht]
+    \begin{center}
+      \begin{tabular}{|c || c c c|}
+      \hline
+      i &  $|e_{i}|$   & $m_{i} = \frac{|e_{i-1}|}{|e_{i}|}$ & $\log_{2}m_{i}$ \\
+      \hline
+      1 & 4.8149E+00 & ------ & ------ \\
+      2 & 1.0312E+00 & 4.6694 & 2.2232 \\ 
+      3 & 2.6014E-01 & 3.9639 & 1.9869 \\
+      4 & 6.5154E-02 & 3.9927 & 1.9974 \\ 
+      5 & 1.6280E-02 & 4.0021 & 2.0007 \\ 
+      6 & 4.0693E-03 & 4.0007 & 2.0003 \\ 
+      7 & 1.0173E-03 & 4.0002 & 2.0001 \\ 
+      8 & 2.5432E-04 & 4.0000 & 2.0000 \\
+      9 & 6.3579E-05 & 4.0000 & 2.0000 \\
+      10 & 1.5895E-05 & 4.0000 & 2.0000 \\
+      11 & 3.9737E-06 & 4.0000 & 2.0000 \\
+      \hline
+      \end{tabular} 	
+    \end{center}
+    \label{tab:convergencia}
+    \caption{Tabela de velocidade de convergência do método implementado.}
+  \end{table}
+  
+  Como pode ser visto pela tabela \ref{tab:convergencia}, o método que implementamos está correto e, para $8 \leq i \leq 11$, sua ordem de convergência é praticamente igual ao valor teórico. Mesmo com o uso do método de Newton, que é um método iterativo e nem sempre retorna o valor exato da função. Neste modelo, como a função $g$ que se deve calcular a raíz não é linear, o valor retornado não é exato, mas é um número próximo. Os critérios de parada utilizados foram um número máximo de 100 iterações ou uma variação relativa de 0.001 entre o valor de duas iterações consecutivas. Estes valores foram escolhidos após realizados testes com números maiores e verificado que estes valores resultam em um erro absoluto baixo para o cálculo de $\mathbb{U}$ e eles não consomem muito tempo computacional.
+  
+  Os valores obtidos com a execução deste programa também foi gerado um gráfico da imagem do curva do perseguido, da curva exata do perseguidor e de mais 3 curvas com diferentes valores de $h$.
+  
+  Com o método devidamente implementado, podemos analisar a curva descrita pelo perseguidor para diferentes parâmetros da equação.
+
+  
   \section{Referências bibliográficas}
   \bibliographystyle{unsrt}
 
