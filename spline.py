@@ -44,15 +44,13 @@ def spline(X, A, fpo, fpn):
 	y = np.arange(0., 40., 0.01)
 
 	
-	for j in range(n):
-		i = 0
+	for i in range(n):
 		T = np.arange(0.+10*i, 10+10*i, 0.01)
 		for t in T:
-			y[i] = A[0] + B[0]*(t-X[0])+C[0]*(t-X[0])**2+D[0]*(t-X[0])**3
-			i = i+1	
-
+			y[i] = A[i] + B[i]*(t-X[i])+C[i]*(t-X[i])**2+D[i]*(t-X[i])**3
 	T = np.arange(0., 40., 0.01)
-
+	print(T)
+	print(y)	
 	plt.plot(T,y)
 	plt.show()
 	
