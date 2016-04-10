@@ -335,7 +335,7 @@ c_{n}^{[k+1]} = \frac{3f'(x_n)-\frac{3}{h_{n-1}}(a_n-a_{n-1})-h_{n-1}c_{n-1}^{k+
   
   Como pode ser visto pela tabela \ref{tab:convergencia}, o método que implementamos está correto e, para $8 \leq i \leq 11$, sua ordem de convergência é praticamente igual ao valor teórico. Mesmo com o uso do método de Newton, que é um método iterativo e nem sempre retorna o valor exato da função. Neste modelo, como a função $g$ que se deve calcular a raiz não é linear, o valor retornado não é exato, mas é um número próximo. Os critérios de parada utilizados foram um número máximo de 100 iterações ou uma variação relativa de 0.001 entre o valor de duas iterações consecutivas. Estes valores foram escolhidos após realizados testes com números maiores e verificado que estes valores resultam em um erro absoluto baixo para o cálculo de $\mathbb{U}$ e eles não consomem muito tempo computacional.
   
-  Os valores obtidos com a execução deste programa também foi gerado um gráfico da imagem do curva do perseguido, da curva exata do perseguidor e de mais 3 curvas com diferentes valores de $h$. Este gráfico é apresentado na figura \ref{fig:manufaturada}. Nesta figura fica claro a convergência numérica, já que os gráficos para $ i \geqslant 7$ estão praticamente sobrepostos. Também podemos perceber o interessante fato de que se ambos os elementos se movem à mesma velocidade, o perseguidor nunca alcançará seu alvo, ele conseguirá apenas reduzir sua distância à metade do valor inicial.
+  Com a execução deste programa também foi gerado um gráfico da imagem do curva do perseguido, da curva exata do perseguidor e de mais 3 curvas com diferentes valores de $h$. Este gráfico é apresentado na figura \ref{fig:manufaturada}. Nesta figura fica claro a convergência numérica, já que os gráficos para $ i \geqslant 7$ estão praticamente sobrepostos. Também podemos perceber o interessante fato de que se ambos os elementos se movem à mesma velocidade, o perseguidor nunca alcançará seu alvo, ele conseguirá apenas reduzir sua distância à metade do valor inicial.
   
   \begin{figure}[H]
    \includegraphics[width=\textwidth]{manufaturada.png}
@@ -360,9 +360,9 @@ c_{n}^{[k+1]} = \frac{3f'(x_n)-\frac{3}{h_{n-1}}(a_n-a_{n-1})-h_{n-1}c_{n-1}^{k+
   
   Para um perseguidor que está inicialmente fora da elipse, o comportamento tende ao mesmo do caso anterior, sendo diferente apenas no inicio. O gráfico para este problema é apresentado na figura \ref{fig:curva-el-1}.
   
-  \begin{figure}[H]
    \includegraphics[width=\textwidth]{el-1-X.png}
    \includegraphics[width=\textwidth]{el-1-Y.png}
+   \begin{figure}[H]
    \includegraphics[width=\textwidth]{el-1-XY.png}
    \caption{Curvas de perseguição de um modelo elíptico.}
    \label{fig:curva-el-1}
