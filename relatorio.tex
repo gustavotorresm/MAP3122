@@ -31,7 +31,7 @@
 }
 
 %opening
-\title{Relatório Parcial}
+\title{Relatório Final}
 \author{Gustavo Torres \and Mateus Nakajo}
 
 \begin{document}
@@ -40,6 +40,7 @@
 \maketitle
 
 \section{Introdução}
+  \label{sec:intro}
   Muitos dos fenômenos do Universo podem ser modelados matematicamente por equações diferencias, o problema da curva de perseguição é um exemplo de tal fenômeno. Ele é um modelo que se baseia em uma partícula que descreve uma trajetória bem definida, o perseguido, e uma outra partícula, o perseguidor, que sempre se move em direção à primeira, descrevendo uma perseguição.
   
   Esta curva foi proposta pelo matemático Piérre Bouguer em 1732 e foi, em 1859, melhor estudada pelo matemático George Boole, que a batizou como “curva de perseguição”. 
@@ -382,11 +383,7 @@ c_n = 0 \\
    \includegraphics[width=\textwidth]{zz-XY-spline.png}
    \label{fig:curva-zz}
    \caption{Modelo \emph{ziguezague} com uso da técnica de spline cúbico.}
-  \end{figure}
-  
-  \section{Conclusões}
-
-  
+  \end{figure}  
   
   Para essas curvas apresentadas, podemos realizar também uma interpolação pelo método do spline cúbico.
   O algoritmo desse método foi desenvolvido na linguagem Python e foi baseado no algoritmo 3.5 do Numerical Analiysis [4]. 
@@ -454,10 +451,13 @@ c_n = 0 \\
   \end{lstlisting}
 
   \section{Conclusão}
+  O presente trabalho nos permitiu desenvolver o processo de obtenção da solução numérica de um problema modelado por um sistema linear de equações diferenciais, mais especificamente, utilizando o método implícito dos trapézios, que também nos permitiu desenvolver a técnica da utilização do método de Newton para a obtenção da raíz de uma função bidimensional.
   
+  A partir da verificação do método pela técnica da Solução Manufaturada, foi possível validar o método utilizado, que ainda pode ser utilizado para problemas futuros. Com isso também foi possível verificarmos experimetalmente que o método dos trapézios converge proporcionalmente ao quadrado do passo $h$.
   
-  \section{Apêndice}
-
+  O algoritmo de splines cúbicos implementados também foi validado comparando os coeficientes obtidos com um polinômio de terceiro grau. Seu uso para o problema solucionado numericamente permitiu a obtenção de uma curva contínua através da técnica de interpolação e isso nos proporciona um estudo melhor, caso seja necessário a utilização de um par de pontos que não tenha sido calculado pela integração.
+  
+  Finalmente, também observou-se neste trabalho as diferentes formas de curvas descrita para um caso de perseguição, mostrando-nos que a perseguição é bem sucedida apenas quando o perseguidor possui uma velocidade maior que seu objetivo. Esta análise de curvas pode ser muito importante para problemas reais, como mencionado na seção \ref{sec:intro}.
   
   \section{Referências bibliográficas}
   \bibliographystyle{unsrt}
@@ -481,10 +481,20 @@ c_n = 0 \\
      
      \bibitem{burden}
       BURDEN, Richard L.; FAIRES, J. Douglas. \emph{Numerical Analysis}. Boston: Brooks Cole, 2010.  
-     
-     
-     
 
   \end{thebibliography}
+  
+  \section{Apêndice}
+  \appendix
+  \section{Rosas são vermelhas}
+  Como citado anteriormente, as curvas de perseguições também geram grande interesse devido aos seus aspectos estéticos, resultando em curvas muitas vezes inusitadas e visualmente agradáveis.
+  Motivados por isso, decidimos verificar a curva para uma presa que descreve uma trajetória na forme de rosácea de 9 pétalas e com $k = 0.85$. A figura \ref{rosacea} apresenta o resultado desta curva. O perseguidor para este caso, descreve uma rosácea de menor comprimento. Realizando o cálculo para diversos valores de $k$ obtemos uma combinação muito interessante de rosáceas.
+  
+  \begin{figure}[H]
+   \includegraphics[width=\textwidth]{rosacea.png}
+   \label{fig:rosace}
+   \caption{Modelo das rosáceas.}
+  \end{figure}
+  
 
 \end{document}
