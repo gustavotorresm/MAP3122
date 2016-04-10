@@ -441,10 +441,6 @@ c_{n}^{[k+1]} = \frac{3f'(x_n)-\frac{3}{h_{n-1}}(a_n-a_{n-1})-h_{n-1}c_{n-1}^{k+
 		B[i] = (A[i+1] - A[i]) / H[i] - H[i] * (C[i+1] + 2 * C[i]) / 3
 		D[i] = (C[i+1] - C[i]) / (3 * H[i])
 
-	A = A[0:len(A)-1]
-	B = B[0:len(B)-1]
-	C = C[0:len(C)-1]
-	D = D[0:len(D)-1]
 	
   \end{lstlisting}
 
