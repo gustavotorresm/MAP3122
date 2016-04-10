@@ -359,7 +359,33 @@ c_n = 0 \\
   
   A partir do gráfico, podemos observar que quando ambos os elementos estão à mesma velocidade, o perseguidor fica muito próximo de sua presa, entretanto, não consegue alcançá-lo. Não obstante, quando ele está com uma velocidade maior, ele consegue capturar a presa. Para a velocidade sendo a metade da velocidade o persegudo, por sua vez, a trajetória descrita pelo perseguidor é parecida com uma elipse, mas com um comprimento menor, i.e., ela é interna à curva descrita pelo alvo.
   
-  O último modelo a ser estudado é a curva de perseguição para um perseguido que descreve uma trajetória em \emph{zigue-zague}.
+  Para um perseguidor que está inicialmente fora da elipse, o comportamento tende ao mesmo do caso anterior, sendo diferente apenas no inicio. O gráfico para este problema é apresentado na figura \ref{fig:curva-el-1}.
+  
+  \begin{figure}[H]
+   \includegraphics[scale=0.45]{el-1-X.png}
+   \includegraphics[scale = 0.45]{el-1-Y.png}
+   \includegraphics[width=\textwidth]{el-1-XY.png}
+   \label{fig:curva-el-1}
+   \caption{Curvas de perseguição de um modelo elíptico.}
+  \end{figure}
+  
+  O último modelo a ser estudado é a curva de perseguição para um perseguido que descreve uma trajetória em \emph{zigue-zague}. Neste modelo utilizamos um spline cúbico para interpolar os pontos resultantes da integração e, assim, estudar a curva de maneira contínua. A partir da curva resultante é possível observar que o perseguidor descreve uma trajetória semelhante a uma senóide.
+  
+  O spline utilizado neste problema realiza a interpolação dos pontos obtidos para a coordenada $y_k$, como função das coordenadas $x_k$. Para a condição de controno do spline vinculado, foi necessária a obtenção de $\frac{dy(0)}{dx}$ e $\frac{dy(t_n)}{dx}$. Apesar da função $f$ do problema de Cauchy nos retornar os valores de $x'(t)$ e $y'(t)$, podemos facilmente descobrir o desejado pela regra da cadeia:
+  \begin{equation}
+   \frac{dy}{dx} = \frac{dy}{dt} \frac{dt}{dy}
+  \end{equation}
+  
+  O resultado da solução numérica, juntamente com a interpolação, pode ser vista na figura \ref{fig:curva-zz}.
+  
+  \begin{figure}[H]
+   \includegraphics[width=\textwidth]{zz-XY-spline.png}
+   \label{fig:curva-zz}
+   \caption{Modelo \emph{ziguezague} com uso da técnica de spline cúbico.}
+  \end{figure}
+  
+  \section{Conclusões}
+
   
   
   Para essas curvas apresentadas, podemos realizar também uma interpolação pelo método do spline cúbico.
@@ -449,8 +475,10 @@ c_n = 0 \\
       \emph{Pursuit Curves},
       Academic Forum 24,
       2006.
+      
      \bibitem{humes}
       HUMES, Ana et al. \emph{Noções de Cálculo Numérico}. São Paulo: McGraw-Hill do Brasil, 1984.
+     
      \bibitem{burden}
       BURDEN, Richard L.; FAIRES, J. Douglas. \emph{Numerical Analysis}. Boston: Brooks Cole, 2010.  
      

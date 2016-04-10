@@ -1,7 +1,7 @@
 import numpy as np
 from numpy import linalg as alglin
 import matplotlib
-from params import *
+from rosacea import *
 import matplotlib.pyplot as plt
 
 def f(t, U):
@@ -37,7 +37,7 @@ def RungeKutta(U):
 	k2 = h*f(tn + h/2, U + k1/2)
 	return k2
 
-def init(k = 8):
+def init(k = 10):
 	global to
 	global tf
 	global n
@@ -45,10 +45,10 @@ def init(k = 8):
 	global Uo
 
 	to = 0.
-	tf = 40.
+	tf = 10.
 	n  = int(2. ** k) 
 	h  = dt = (tf - to)/n
-	Uo = np.array((10, 0))
+	Uo = np.array((0,0))
 
 def calcula(manufaturado = False):
 	global tn
@@ -74,31 +74,19 @@ def calcula(manufaturado = False):
 	else:
 		erro = None
 
-	return {'U': u, 'erro': erro}
+	return {'U': u, 'T' : t, 'erro': erro}
 
 
-for i in range(1,11):
-	init(i)
-	resultado = calcula(True)
+init(15)
+X = calcula()
 
-	if i > 1:
-		anterior = erro
-	
-	erro = resultado['erro']
+np.save("ro", X['U'])
 
-	print("{:.4E}".format(erro), end='\t')
-
-	if i > 1:
-		print("{:.5}".format(anterior/erro), end = '\t')
-		print("{:.5}".format(np.log(anterior/erro)/np.log(2)), end = '\t')
-
-	print("")
+t = X['T']
+np.save("ro-time", t)
 
 v = np.empty((2, n + 1))
 
-for i in range(n + 1):
+for i in range(len(t)):
 	v[:,i] = V(t[i])
-
-plt.plot(v[0], v[1], '-')
-plt.plot(u[0], u[1])
-plt.show()
+np.save('ro-alvo', v)

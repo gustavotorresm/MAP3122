@@ -4,7 +4,7 @@
 import numpy as np
 
 def k():
-	return 1
+	return .5
 
 def V(t):
 	return np.array([2 * np.cos(t), np.sin(t)])

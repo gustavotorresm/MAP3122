@@ -8,9 +8,9 @@ def spline(X, A, fpo, fpn):
 	L = np.empty((n + 1))
 	mi = np.empty((n + 1))
 	z = np.empty((n + 1))
-	C = [0] * (n + 1)
-	B = [0] * (n + 1)
-	D = [0] * (n + 1)
+	C = np.empty(n+1)
+	B = np.empty(n+1)
+	D = np.empty(n+1)
 
 	for i in range(n):
 		H[i] = X[i+1] - X[i]
@@ -41,17 +41,29 @@ def spline(X, A, fpo, fpn):
 		B[i] = (A[i+1] - A[i]) / H[i] - H[i] * (C[i+1] + 2 * C[i]) / 3
 		D[i] = (C[i+1] - C[i]) / (3 * H[i])
 
-	A = A[0:len(A)-1]
-	B = B[0:len(B)-1]
-	C = C[0:len(C)-1]
-	D = D[0:len(D)-1]
+	A = np.array(A[0:len(A)-1])
+	B = np.array(B[0:len(B)-1])
+	C = np.array(C[0:len(C)-1])
+	D = np.array(D[0:len(D)-1])
 
+	coeficients = np.empty((4, n))
+	coeficients[0] = A
+	coeficients[1] = B
+	coeficients[2] = C
+	coeficients[3] = D
 
-	print(A)
-	print(B)
-	print(C)
-	print(D)
+	return coeficients
 
+def interpolate(coeficients, x, x_data):
+	i = 0
+	while x_data[i] <= x:
+		i += 1
+	i -= 1
+
+	h = x - x_data[i]
+	c = coeficients[:,i]
+
+	return c[0] + c[1] * h + c[2] * h **2 + c[3] * h ** 3
 
 #	T = np.arange(1., 3., 0.1)
 #	y = np.zeros(20)
