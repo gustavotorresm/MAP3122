@@ -209,7 +209,7 @@
   
   O segundo sistema que iremos resolver é quando o perseguido descreve uma trajetória elíptica. Os parâmetros, para este caso, são: $\mathbb{V}(t) = (\alpha \cos(t), \beta \sin(t))$, $\mathbb{V}'(t) = (-\alpha \sin(t), \beta \cos(t))$, usando $k = 0.5$, $k = 1$ e $k = 2$, para analisarmos se o perseguidor consegue alcançar sua presa, e variando sua posição inicial para pontos dentro e fora da elipse.
   
-  O último sistema estudado descreve um perseguindo fugindo de seu persegidor descrevendo uma trajetória em \emph{zigue-zague}. Esta trajetória é parametrizada por:
+  O último sistema estudado descreve um perseguindo fugindo de seu perseguidor descrevendo uma trajetória em \emph{zigue-zague}. Esta trajetória é parametrizada por:
   \begin{equation}
    \mathbb{V}(t) =
    (t, \frac{2}{\pi} \arcsin(\sin(\pi x)))
@@ -219,27 +219,28 @@
   Da equação \ref{eq:param} obtemos que $||\mathbb{V}'(t)|| = 1$. Neste modelo utilizaremos $k = 1$ e também iremos variar a posição inicial do perseguidor. Neste último modelo também será utilizado o método de \emph{spline} polinomial de terceiro grau, para interpolar os pontos obtidos para a trajetória do perseguidor.  
    
   Na interpolação por \emph{spline} cúbico, o intervalo no qual a função é aproximada é dividido em subintervalos e em cada um deles a função é aproximada por um polinômio de terceiro grau. Como existem quatro graus de liberdade na construção de uma função cúbica, é possível construí-las de modo que o \emph{spline} resultante tenha tanto primeira como segunda derivada contínua.
-  Seja $f$ uma função definida em $x_0 < x_1 < ... < x_n$ e seja $S$ o spline cúbico que interpola $f$. As seguintes condições devem ser satisfeitas:
+  Para isso acontecer, as seguintes condições devem ser satisfeitas:
   \begin{enumerate}
   \item $S_j(x)$ é um polinômio cúbico, no subintervalo $[x_j,x_{j+1}]$ para cada $j = 0,1,...,n-1$
-  \item $S_j(x_j) = f(x_j)$ e $S_{j+1}(x_{j+1}) = f(x_{j+1}) $ para cada $j = 0,1,...,n-1$
+  \item $S_j(x_j) = y_j$ e $S_{j+1}(x_{j+1}) = y_{j+1} $ para cada $j = 0,1,...,n-1$
   \item $S_{j+1}(x_{j+1})=S_j(x_{j+1})$ para cada $j = 0,1,...,n-1$
   \item $S'_{j+1}(x_{j+1})=S'_j(x_{j+1})$ para cada $j = 0,1,...,n-1$
   \item $S''_{j+1}(x_{j+1})=S''_j(x_{j+1})$ para cada $j = 0,1,...,n-1$
-  \item $S'(x_0) = f'(x_0)$ e $S'(x_n) = f'(x_n)$
+  \item $S''(x_0) = S''(x_n) = 0$
   \end{enumerate}
   
- 
+  A condição 6 é adotada porque não se tem informação sobre as derivadas nas fronteiras. Nesse caso, o \emph{spline} é chamado de \emph{spline} natural.  
+  
 Para construir um \emph{spline} cúbico, devem satisfazer as condições as funções cúbicas
   \begin{equation}
-   S_j(x) = a_j + b_j(x - x_j)+c_j(x-x_j)^2 + d_j(x-x_j)^3
+   S_j(z) = a_j + b_j(z - z_j)+c_j(z-z_j)^2 + d_j(z-z_j)^3
    \label{eq:spline}
   \end{equation}
   para cada $j = 0, 1, ..., n-1$.
-  Seja $h_j=x_{j+1}-x_j$.
+  Seja $h_j=z_{j+1}-z_j$.
   É possível provar \cite{burden} que os coeficientes $a_j, b_j, c_j$ e $d_j$ satisfazem as seguintes relações:
   \begin{equation}
-   a_j = f(x_j)
+   a_j = y_{j}
   \label{eq:coef_a}
   \end{equation}
   
@@ -257,12 +258,12 @@ Para construir um \emph{spline} cúbico, devem satisfazer as condições as fun�
   \begin{equation}
    A = 
    \begin{pmatrix}
-    \diagentry{2h_0} & \diagentry{h_0}&0&\cdots&\cdots&0\\
+    \diagentry{1} & \diagentry{0}&0&\cdots&\cdots&0\\
     \diagentry{h_0} & \diagentry{2(h_0+h_1)} & \diagentry{h_1}&\diagentry{\xddots}&&\vdots\\
     0 &\diagentry {h_1} & \diagentry{2(h_1+h_2)} & \diagentry{h_2}&\diagentry{\xddots}&\vdots\\
     \vdots & \diagentry{\xddots} & \diagentry{\xddots} & \diagentry{\xddots} & \diagentry{\xddots}&0\\
     \vdots && \diagentry{\xddots} & \diagentry {h_{n-2}} & \diagentry{2(h_{n-2}+h_{n-1})} & \diagentry{h_{n-1}}\\
-    0 &\cdots&\cdots&0& h_{n-1} & 2h_{n-1}\\
+    0 &\cdots&\cdots&0& 0 & 1\\
    \end{pmatrix}
    \label{eq:sistema}
   \end{equation}
@@ -270,12 +271,11 @@ Para construir um \emph{spline} cúbico, devem satisfazer as condições as fun�
   \begin{equation}
    b = 
    \begin{pmatrix}
-    \frac{3}{h_0}(a_1-a_0)-3f'(x_0)\\
+    0\\
     \frac{3}{h_1}(a_2-a_1)-\frac{3}{h_0}(a_1-a_0)\\
     \vdots\\
     \frac{3}{h_{n-1}}(a_n-a_{n-1})-\frac{3}{h_{n-2}}(a_{n-1}-a_{n-2})\\
-    3f'(x_n)-\frac{3}{h_{n-1}}(a_n-a_{n-1})\\
-
+    0\\
    \end{pmatrix}
   \end{equation}
   
@@ -291,11 +291,13 @@ Para construir um \emph{spline} cúbico, devem satisfazer as condições as fun�
 
 Para resolver esse sistema, usaremos o Método iterativo de Gauss-Seidel \cite{humes}. 
   \begin{multline}
-\\c_0^{k+1} = \frac{\frac{3}{h_0}(a_1-a_0)-3f'(x_0) - h_0c_1^{k}}{2h_0}\\
-c_1^{[k+1]} = \frac{\frac{3}{h_1}(a_2-a_1)-\frac{3}{h_0}(a_1-a_0)-h_0c_0^{k+1}-h_1c_2^k}{2(h_0+h_1)}\\
-c_2^{[k+1]} = \frac{\frac{3}{h_2}(a_3-a_2)-\frac{3}{h_1}(a_2-a_1)-h_1c_1^{k+1}-h_2c_3^k}{2(h_1+h_2)}\\
+\\ c_0 = 0 \\
+c_1^{[k+1]} = \frac{-h_1c_2^{[k]}}{2(h_0+h_1)} \\
+c_2^{[k+1]} = \frac{-h_1c_1^{[k+1]}-h_2c_3^{[k]}}{2(h_1+h_2)} \\
+c_3^{[k+1]} = \frac{-h_2c_2^{[k+1]}-h_3c_4^{[k]}}{2(h_2+h_3)} \\
 \vdots \\
-c_{n}^{[k+1]} = \frac{3f'(x_n)-\frac{3}{h_{n-1}}(a_n-a_{n-1})-h_{n-1}c_{n-1}^{k+1}}{2h_{n-1}}\\
+c_{n-1}^{[k+1]} = \frac{-h_{n-2}c_{n-2}^{[k+1]}}{2(h_{n-2}+h_{n-1})} \\
+c_n = 0 \\
   \end{multline}
   
   
@@ -307,7 +309,7 @@ c_{n}^{[k+1]} = \frac{3f'(x_n)-\frac{3}{h_{n-1}}(a_n-a_{n-1})-h_{n-1}c_{n-1}^{k+
   
   O princípio da tabela é verificar a variação do erro absoluto para valores diferentes de $\Delta t = h$. Foram utilizados 11 valores diferentes para $h$, dados por $h = (t_{f} - t_{0}) * 2 ^ {- i}$, onde $t_{f}$ é o instante de tempo final do intervalo, onde será calculado o erro absoluto, que é dado pela soma euclidiana da diferença do valor obtido numericamente com o valor exato, i.e., $|e| = \sqrt{(x(t_{f}) - x_{n})^{2} + (y(t_{f}) - y_{n})^2}$. Os parâmetros e as condições de contorno para este problema manufaturado foram especificados na seção anterior.
   
-  A tabela possui 4 colunas, uma indicando o valor de $i$, uma com o erro absoluto $|e_{i}|$, outra com a razão entre o erro anterior com o erro atual e, finalmente, uma coluna indicando o logaritmo na base 2 desta razão. Pela teoria, este valor deve convegir para um número $N$, que será a ordem do método (para o método dos trapézios, $N = 2$). Se esta última coluna convergir, o erro tende a 0 e, portanto, o método implementado computacionalmente estará correto.
+  A tabela possui 4 colunas, uma indicando o valor de $i$, uma com o erro absoluto $|e_{i}|$, outra com a razão entre o erro anterior com o erro atual e, finalmente, uma coluna indicando o logaritmo na base 2 desta razão. Pela teoria, este valor deve convergir para um número $N$, que será a ordem do método (para o método dos trapézios, $N = 2$). Se esta última coluna convergir, o erro tende a 0 e, portanto, o método implementado computacionalmente estará correto.
 
   \begin{table}[ht]
     \begin{center}
@@ -329,18 +331,18 @@ c_{n}^{[k+1]} = \frac{3f'(x_n)-\frac{3}{h_{n-1}}(a_n-a_{n-1})-h_{n-1}c_{n-1}^{k+
       \hline
       \end{tabular} 	
     \end{center}
-    \caption{Tabela de velocidade de convergência do método implementado.}
     \label{tab:convergencia}
+    \caption{Tabela de velocidade de convergência do método implementado.}
   \end{table}
   
-  Como pode ser visto pela tabela \ref{tab:convergencia}, o método que implementamos está correto e, para $8 \leq i \leq 11$, sua ordem de convergência é praticamente igual ao valor teórico. Mesmo com o uso do método de Newton, que é um método iterativo e nem sempre retorna o valor exato da função. Neste modelo, como a função $g$ que se deve calcular a raiz não é linear, o valor retornado não é exato, mas é um número próximo. Os critérios de parada utilizados foram um número máximo de 100 iterações ou uma variação relativa de 0.001 entre o valor de duas iterações consecutivas. Estes valores foram escolhidos após realizados testes com números maiores e verificado que estes valores resultam em um erro absoluto baixo para o cálculo de $\mathbb{U}$ e eles não consomem muito tempo computacional.
+  Como pode ser visto pela tabela \ref{tab:convergencia}, o método que implementamos está correto e, para $8 \leq i \leq 11$, sua ordem de convergência é praticamente igual ao valor teórico. Mesmo com o uso do método de Newton, que é um método iterativo e nem sempre retorna o valor exato da função. Neste modelo, como a função $g$ que se deve calcular a raíz não é linear, o valor retornado não é exato, mas é um número próximo. Os critérios de parada utilizados foram um número máximo de 100 iterações ou uma variação relativa de 0.001 entre o valor de duas iterações consecutivas. Estes valores foram escolhidos após realizados testes com números maiores e verificado que estes valores resultam em um erro absoluto baixo para o cálculo de $\mathbb{U}$ e eles não consomem muito tempo computacional.
   
-  Com a execução deste programa também foi gerado um gráfico da imagem do curva do perseguido, da curva exata do perseguidor e de mais 3 curvas com diferentes valores de $h$. Este gráfico é apresentado na figura \ref{fig:manufaturada}. Nesta figura fica claro a convergência numérica, já que os gráficos para $ i \geqslant 7$ estão praticamente sobrepostos. Também podemos perceber o interessante fato de que se ambos os elementos se movem à mesma velocidade, o perseguidor nunca alcançará seu alvo, ele conseguirá apenas reduzir sua distância à metade do valor inicial.
+  Os valores obtidos com a execução deste programa também foi gerado um gráfico da imagem do curva do perseguido, da curva exata do perseguidor e de mais 3 curvas com diferentes valores de $h$. Este gráfico é apresentado na figura \ref{fig:manufaturada}. Nesta figura fica claro a convergência numérica, já que os gráficos para $ i \geqslant 7$ estão praticamente sobrepostos. Também podemos perceber o interessante fato de que se ambos os elementos se movem à mesma velocidade, o perseguidor nunca alcançará seu alvo, ele conseguirá apenas reduzir sua distância à metade do valor inicial.
   
   \begin{figure}[H]
    \includegraphics[width=\textwidth]{manufaturada.png}
-   \caption{Curvas do perseguido e do perseguidor para o problema teste.}
    \label{fig:manufaturada}
+   \caption{Curvas do perseguido e do perseguidor para o problema teste.}
   \end{figure}
 
   
@@ -352,23 +354,23 @@ c_{n}^{[k+1]} = \frac{3f'(x_n)-\frac{3}{h_{n-1}}(a_n-a_{n-1})-h_{n-1}c_{n-1}^{k+
    \includegraphics[width=\textwidth]{el-0-X.png}
    \includegraphics[width=\textwidth]{el-0-Y.png}
    \includegraphics[width=\textwidth]{el-0-XY.png}
-   \caption{Curvas de perseguição de um modelo elíptico.}
    \label{fig:curva-el}
+   \caption{Curvas de perseguição de um modelo elíptico.}
   \end{figure}
   
   A partir do gráfico, podemos observar que quando ambos os elementos estão à mesma velocidade, o perseguidor fica muito próximo de sua presa, entretanto, não consegue alcançá-lo. Não obstante, quando ele está com uma velocidade maior, ele consegue capturar a presa. Para a velocidade sendo a metade da velocidade o perseguido, por sua vez, a trajetória descrita pelo perseguidor é parecida com uma elipse, mas com um comprimento menor, i.e., ela é interna à curva descrita pelo alvo.
   
   Para um perseguidor que está inicialmente fora da elipse, o comportamento tende ao mesmo do caso anterior, sendo diferente apenas no inicio. O gráfico para este problema é apresentado na figura \ref{fig:curva-el-1}.
   
-   \includegraphics[width=\textwidth]{el-1-X.png}
-   \includegraphics[width=\textwidth]{el-1-Y.png}
-   \begin{figure}[H]
+  \begin{figure}[H]
+   \includegraphics[scale=0.45]{el-1-X.png}
+   \includegraphics[scale = 0.45]{el-1-Y.png}
    \includegraphics[width=\textwidth]{el-1-XY.png}
-   \caption{Curvas de perseguição de um modelo elíptico.}
    \label{fig:curva-el-1}
+   \caption{Curvas de perseguição de um modelo elíptico.}
   \end{figure}
   
-  O último modelo a ser estudado é a curva de perseguição para um perseguido que descreve uma trajetória em \emph{zigue-zague}. Neste modelo utilizamos um spline cúbico para interpolar os pontos resultantes da integração e, assim, estudar a curva de maneira contínua. A partir da curva resultante é possível observar que o perseguidor descreve uma trajetória semelhante a uma senóide.
+  O último modelo a ser estudado é a curva de perseguição para um perseguido que descreve uma trajetória em \emph{zigue-zague}. Neste modelo utilizamos um spline cúbico para interpolar os pontos resultantes da integração e, assim, estudar a curva de maneira contínua. A partir da curva resultante é possível observar que o perseguidor descreve uma trajetória semelhante a uma senoide.
   
   O spline utilizado neste problema realiza a interpolação dos pontos obtidos para a coordenada $y_k$, como função das coordenadas $x_k$. Para a condição de contorno do spline vinculado, foi necessária a obtenção de $\frac{dy(0)}{dx}$ e $\frac{dy(t_n)}{dx}$. Apesar da função $f$ do problema de Cauchy nos retornar os valores de $x'(t)$ e $y'(t)$, podemos facilmente descobrir o desejado pela regra da cadeia:
   \begin{equation}
@@ -379,8 +381,8 @@ c_{n}^{[k+1]} = \frac{3f'(x_n)-\frac{3}{h_{n-1}}(a_n-a_{n-1})-h_{n-1}c_{n-1}^{k+
   
   \begin{figure}[H]
    \includegraphics[width=\textwidth]{zz-XY-spline.png}
-   \caption{Modelo \emph{ziguezague} com uso da técnica de spline cúbico.}
    \label{fig:curva-zz}
+   \caption{Modelo \emph{zigue-zague} com uso da técnica de spline cúbico.}
   \end{figure}  
   
   Para essas curvas apresentadas, podemos realizar também uma interpolação pelo método do spline cúbico.
@@ -412,7 +414,7 @@ c_{n}^{[k+1]} = \frac{3f'(x_n)-\frac{3}{h_{n-1}}(a_n-a_{n-1})-h_{n-1}c_{n-1}^{k+
 
 	for j in range(n - 1):
 		i = j + 1
-		Alfa[i]=(3/H[i]) * (A[i+1]-A[i]) - (3/H[i-1]) * (A[i]-A[i-1])
+		Alfa[i] = (3/H[i]) * (A[i+1] - A[i]) - (3/H[i-1]) * (A[i] - A[i-1])
 		
 	#### Passo 4 ####
 	
@@ -441,6 +443,10 @@ c_{n}^{[k+1]} = \frac{3f'(x_n)-\frac{3}{h_{n-1}}(a_n-a_{n-1})-h_{n-1}c_{n-1}^{k+
 		B[i] = (A[i+1] - A[i]) / H[i] - H[i] * (C[i+1] + 2 * C[i]) / 3
 		D[i] = (C[i+1] - C[i]) / (3 * H[i])
 
+	A = A[0:len(A)-1]
+	B = B[0:len(B)-1]
+	C = C[0:len(C)-1]
+	D = D[0:len(D)-1]
 	
   \end{lstlisting}
 
@@ -478,16 +484,17 @@ c_{n}^{[k+1]} = \frac{3f'(x_n)-\frac{3}{h_{n-1}}(a_n-a_{n-1})-h_{n-1}c_{n-1}^{k+
 
   \end{thebibliography}
   
+  \newpage
   \section{Apêndice}
   \appendix
-  \section{Rosas são vermelhas}
+  \section{Rosas são vermelhas...}
   Como citado anteriormente, as curvas de perseguições também geram grande interesse devido aos seus aspectos estéticos, resultando em curvas muitas vezes inusitadas e visualmente agradáveis.
-  Motivados por isso, decidimos verificar a curva para uma presa que descreve uma trajetória na forme de rosácea de 9 pétalas e com $k = 0.85$. A figura \ref{fig:rosacea} apresenta o resultado desta curva. O perseguidor, para este caso, descreve uma rosácea de menor comprimento. Realizando o cálculo para diversos valores de $k$ obtemos uma combinação muito interessante de rosáceas.
+  Motivados por isso, decidimos verificar a curva para uma presa que descreve uma trajetória na forme de rosácea de 9 pétalas e com $k = 0.85$. A figura \ref{rosacea} apresenta o resultado desta curva. O perseguidor para este caso, descreve uma rosácea de menor comprimento. Realizando o cálculo para diversos valores de $k$ obtemos uma combinação muito interessante de rosáceas.
   
   \begin{figure}[H]
    \includegraphics[width=\textwidth]{rosacea.png}
-   \caption{Modelo das rosáceas.}
    \label{fig:rosacea}
+   \caption{Modelo das rosáceas.}
   \end{figure}
   
 
